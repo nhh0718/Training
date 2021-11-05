@@ -1,0 +1,1 @@
+package rikkei.restfulapidemo.Repository;import org.springframework.data.repository.CrudRepository;import rikkei.restfulapidemo.Entity.Product;public interface ProductRepository extends CrudRepository<Product, Integer> {}
