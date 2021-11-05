@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f6ec184b-87fb-4ccc-817f-0ceb6ea251b7" name="Changes" comment="test Stream" />
+    <list default="true" id="f6ec184b-87fb-4ccc-817f-0ceb6ea251b7" name="Changes" comment="add Simple Console app JC" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,7 +42,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../SpringSecurityVerySimple" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
@@ -140,7 +140,7 @@
       <workItem from="1636080100920" duration="189000" />
       <workItem from="1636080410259" duration="2622000" />
       <workItem from="1636084293925" duration="929000" />
-      <workItem from="1636096021886" duration="58000" />
+      <workItem from="1636096021886" duration="251000" />
     </task>
     <task id="LOCAL-00001" summary="test Stream">
       <created>1635157532092</created>
@@ -149,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635157532092</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add Simple Console app JC">
+      <created>1636096238508</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1636096238508</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +191,7 @@
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
     <MESSAGE value="test Stream" />
-    <option name="LAST_COMMIT_MESSAGE" value="test Stream" />
+    <MESSAGE value="add Simple Console app JC" />
+    <option name="LAST_COMMIT_MESSAGE" value="add Simple Console app JC" />
   </component>
 </project>
