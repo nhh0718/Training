@@ -1,0 +1,1246 @@
+Index: src/main/java/com/example/demoapi/DemoapiApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/DemoapiApplication.java b/src/main/java/com/example/demoapi/DemoapiApplication.java
+new file mode 100644
+--- /dev/null	(date 1638435251473)
++++ b/src/main/java/com/example/demoapi/DemoapiApplication.java	(date 1638435251473)
+@@ -0,0 +1,13 @@
++package com.example.demoapi;
++
++import org.springframework.boot.SpringApplication;
++import org.springframework.boot.autoconfigure.SpringBootApplication;
++
++@SpringBootApplication
++public class DemoapiApplication {
++
++	public static void main(String[] args) {
++		SpringApplication.run(DemoapiApplication.class, args);
++	}
++
++}
+Index: src/main/java/com/example/demoapi/CustomGlobalExceptionHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/CustomGlobalExceptionHandler.java b/src/main/java/com/example/demoapi/CustomGlobalExceptionHandler.java
+new file mode 100644
+--- /dev/null	(date 1638435251471)
++++ b/src/main/java/com/example/demoapi/CustomGlobalExceptionHandler.java	(date 1638435251471)
+@@ -0,0 +1,45 @@
++package com.example.demoapi;
++
++import org.springframework.http.*;
++
++import org.springframework.web.bind.MethodArgumentNotValidException;
++import org.springframework.web.bind.annotation.ControllerAdvice;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.context.request.WebRequest;
++import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
++
++import java.util.Date;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.stream.Collectors;
++
++@ControllerAdvice
++public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
++	@ExceptionHandler(value = ResourceException.class)
++	public ResponseEntity<Object> exception(ResourceException exception) {
++		Map<String, Object> body = new LinkedHashMap<>();
++		body.put("timestamp", new Date());
++		body.put("message", exception.getMessage());
++		body.put("status", exception.getHttpStatus().value());
++		return new ResponseEntity<>(body, exception.getHttpStatus());
++	}
++
++	@Override
++	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
++																  HttpHeaders headers,
++																  HttpStatus status, WebRequest request) {
++		Map<String, Object> body = new LinkedHashMap<>();
++		body.put("timestamp", new Date());
++		body.put("status", status.value());
++		//Get all errors
++		List<String> errors = ex.getBindingResult()
++				.getFieldErrors()
++				.stream()
++				.map(x -> x.getDefaultMessage())
++				.collect(Collectors.toList());
++
++		body.put("errors", errors);
++		return new ResponseEntity<>(body, headers, status);
++	}
++}
+Index: src/main/java/com/example/demoapi/ResourceException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/ResourceException.java b/src/main/java/com/example/demoapi/ResourceException.java
+new file mode 100644
+--- /dev/null	(date 1638435251474)
++++ b/src/main/java/com/example/demoapi/ResourceException.java	(date 1638435251474)
+@@ -0,0 +1,21 @@
++package com.example.demoapi;
++
++import org.springframework.http.HttpStatus;
++
++
++public class ResourceException extends RuntimeException {
++	private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
++
++	public HttpStatus getHttpStatus() {
++		return httpStatus;
++	}
++
++	public ResourceException(String message) {
++		super(message);
++	}
++
++	public ResourceException(HttpStatus httpStatus, String message) {
++		super(message);
++		this.httpStatus = httpStatus;
++	}
++}
+Index: src/test/java/com/example/demoapi/DemoapiApplicationTests.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/example/demoapi/DemoapiApplicationTests.java b/src/test/java/com/example/demoapi/DemoapiApplicationTests.java
+new file mode 100644
+--- /dev/null	(date 1638435252101)
++++ b/src/test/java/com/example/demoapi/DemoapiApplicationTests.java	(date 1638435252101)
+@@ -0,0 +1,13 @@
++package com.example.demoapi;
++
++import org.junit.jupiter.api.Test;
++import org.springframework.boot.test.context.SpringBootTest;
++
++@SpringBootTest
++class DemoapiApplicationTests {
++
++	@Test
++	void contextLoads() {
++	}
++
++}
+Index: .mvn/wrapper/maven-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/.mvn/wrapper/maven-wrapper.properties b/.mvn/wrapper/maven-wrapper.properties
+new file mode 100644
+--- /dev/null	(date 1638435251461)
++++ b/.mvn/wrapper/maven-wrapper.properties	(date 1638435251461)
+@@ -0,0 +1,2 @@
++distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.8.3/apache-maven-3.8.3-bin.zip
++wrapperUrl=https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar
+Index: src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+new file mode 100644
+--- /dev/null	(date 1638435251487)
++++ b/src/main/resources/application.properties	(date 1638435251487)
+@@ -0,0 +1,5 @@
++
++spring.datasource.url=jdbc:mysql://localhost:3306/hoangtran
++spring.datasource.username=sa
++spring.datasource.password=hoang123
++spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+\ No newline at end of file
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+--- /dev/null	(date 1638435251467)
++++ b/pom.xml	(date 1638435251467)
+@@ -0,0 +1,111 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++    <parent>
++        <groupId>org.springframework.boot</groupId>
++        <artifactId>spring-boot-starter-parent</artifactId>
++        <version>2.6.1</version>
++        <relativePath/> <!-- lookup parent from repository -->
++    </parent>
++    <groupId>com.example</groupId>
++    <artifactId>demoapi</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++    <name>demoapi</name>
++    <description>demoapi</description>
++    <properties>
++        <java.version>11</java.version>
++        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
++    </properties>
++    <dependencies>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-data-jpa</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-web</artifactId>
++        </dependency>
++
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-devtools</artifactId>
++            <scope>runtime</scope>
++            <optional>true</optional>
++        </dependency>
++        <dependency>
++            <groupId>mysql</groupId>
++            <artifactId>mysql-connector-java</artifactId>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.projectlombok</groupId>
++            <artifactId>lombok</artifactId>
++            <optional>true</optional>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-test</artifactId>
++            <scope>test</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.mapstruct</groupId>
++            <artifactId>mapstruct</artifactId>
++            <version>${org.mapstruct.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>javax.validation</groupId>
++            <artifactId>validation-api</artifactId>
++            <version>2.0.0.Final</version>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-validation</artifactId>
++        </dependency>
++    </dependencies>
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.springframework.boot</groupId>
++                <artifactId>spring-boot-maven-plugin</artifactId>
++                <configuration>
++                    <excludes>
++                        <exclude>
++                            <groupId>org.projectlombok</groupId>
++                            <artifactId>lombok</artifactId>
++                        </exclude>
++                    </excludes>
++                </configuration>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <version>3.8.1</version>
++                <configuration>
++                    <source>1.8</source> <!-- depending on your project -->
++                    <target>1.8</target> <!-- depending on your project -->
++                    <annotationProcessorPaths>
++                        <path>
++                            <groupId>org.mapstruct</groupId>
++                            <artifactId>mapstruct-processor</artifactId>
++                            <version>${org.mapstruct.version}</version>
++                        </path>
++                        <path>
++                            <groupId>org.projectlombok</groupId>
++                            <artifactId>lombok</artifactId>
++                            <version>1.18.22</version>
++                        </path>
++                        <path>
++                            <groupId>org.projectlombok</groupId>
++                            <artifactId>lombok-mapstruct-binding</artifactId>
++                            <version>0.2.0</version>
++                        </path>
++                        <!-- other annotation processors -->
++
++                    </annotationProcessorPaths>
++                </configuration>
++            </plugin>
++        </plugins>
++    </build>
++
++</project>
+Index: .jpb/persistence-units.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.jpb/persistence-units.xml b/.jpb/persistence-units.xml
+new file mode 100644
+--- /dev/null	(date 1638435251350)
++++ b/.jpb/persistence-units.xml	(date 1638435251350)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="PersistenceUnitSettings">
++    <persistence-units>
++      <persistence-unit name="Default">
++        <packages>
++          <package value="com.example.demoapi" />
++        </packages>
++      </persistence-unit>
++    </persistence-units>
++  </component>
++</project>
+\ No newline at end of file
+Index: .mvn/wrapper/MavenWrapperDownloader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.mvn/wrapper/MavenWrapperDownloader.java b/.mvn/wrapper/MavenWrapperDownloader.java
+new file mode 100644
+--- /dev/null	(date 1638435251351)
++++ b/.mvn/wrapper/MavenWrapperDownloader.java	(date 1638435251351)
+@@ -0,0 +1,118 @@
++/*
++ * Copyright 2007-present the original author or authors.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      https://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++import java.net.*;
++import java.io.*;
++import java.nio.channels.*;
++import java.util.Properties;
++
++public class MavenWrapperDownloader {
++
++	private static final String WRAPPER_VERSION = "0.5.6";
++	/**
++	 * Default URL to download the maven-wrapper.jar from, if no 'downloadUrl' is provided.
++	 */
++	private static final String DEFAULT_DOWNLOAD_URL = "https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/"
++			+ WRAPPER_VERSION + "/maven-wrapper-" + WRAPPER_VERSION + ".jar";
++
++	/**
++	 * Path to the maven-wrapper.properties file, which might contain a downloadUrl property to
++	 * use instead of the default one.
++	 */
++	private static final String MAVEN_WRAPPER_PROPERTIES_PATH =
++			".mvn/wrapper/maven-wrapper.properties";
++
++	/**
++	 * Path where the maven-wrapper.jar will be saved to.
++	 */
++	private static final String MAVEN_WRAPPER_JAR_PATH =
++			".mvn/wrapper/maven-wrapper.jar";
++
++	/**
++	 * Name of the property which should be used to override the default download url for the wrapper.
++	 */
++	private static final String PROPERTY_NAME_WRAPPER_URL = "wrapperUrl";
++
++	public static void main(String args[]) {
++		System.out.println("- Downloader started");
++		File baseDirectory = new File(args[0]);
++		System.out.println("- Using base directory: " + baseDirectory.getAbsolutePath());
++
++		// If the maven-wrapper.properties exists, read it and check if it contains a custom
++		// wrapperUrl parameter.
++		File mavenWrapperPropertyFile = new File(baseDirectory, MAVEN_WRAPPER_PROPERTIES_PATH);
++		String url = DEFAULT_DOWNLOAD_URL;
++		if (mavenWrapperPropertyFile.exists()) {
++			FileInputStream mavenWrapperPropertyFileInputStream = null;
++			try {
++				mavenWrapperPropertyFileInputStream = new FileInputStream(mavenWrapperPropertyFile);
++				Properties mavenWrapperProperties = new Properties();
++				mavenWrapperProperties.load(mavenWrapperPropertyFileInputStream);
++				url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL, url);
++			} catch (IOException e) {
++				System.out.println("- ERROR loading '" + MAVEN_WRAPPER_PROPERTIES_PATH + "'");
++			} finally {
++				try {
++					if (mavenWrapperPropertyFileInputStream != null) {
++						mavenWrapperPropertyFileInputStream.close();
++					}
++				} catch (IOException e) {
++					// Ignore ...
++				}
++			}
++		}
++		System.out.println("- Downloading from: " + url);
++
++		File outputFile = new File(baseDirectory.getAbsolutePath(), MAVEN_WRAPPER_JAR_PATH);
++		if (!outputFile.getParentFile().exists()) {
++			if (!outputFile.getParentFile().mkdirs()) {
++				System.out.println(
++						"- ERROR creating output directory '" + outputFile.getParentFile().getAbsolutePath() + "'");
++			}
++		}
++		System.out.println("- Downloading to: " + outputFile.getAbsolutePath());
++		try {
++			downloadFileFromURL(url, outputFile);
++			System.out.println("Done");
++			System.exit(0);
++		} catch (Throwable e) {
++			System.out.println("- Error downloading");
++			e.printStackTrace();
++			System.exit(1);
++		}
++	}
++
++	private static void downloadFileFromURL(String urlString, File destination) throws Exception {
++		if (System.getenv("MVNW_USERNAME") != null && System.getenv("MVNW_PASSWORD") != null) {
++			String username = System.getenv("MVNW_USERNAME");
++			char[] password = System.getenv("MVNW_PASSWORD").toCharArray();
++			Authenticator.setDefault(new Authenticator() {
++				@Override
++				protected PasswordAuthentication getPasswordAuthentication() {
++					return new PasswordAuthentication(username, password);
++				}
++			});
++		}
++		URL website = new URL(urlString);
++		ReadableByteChannel rbc;
++		rbc = Channels.newChannel(website.openStream());
++		FileOutputStream fos = new FileOutputStream(destination);
++		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
++		fos.close();
++		rbc.close();
++	}
++
++}
+Index: src/main/java/com/example/demoapi/mapper/HtMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/mapper/HtMapper.java b/src/main/java/com/example/demoapi/mapper/HtMapper.java
+new file mode 100644
+--- /dev/null	(date 1638435251479)
++++ b/src/main/java/com/example/demoapi/mapper/HtMapper.java	(date 1638435251479)
+@@ -0,0 +1,16 @@
++package com.example.demoapi.mapper;
++
++import com.example.demoapi.dto.HtDto;
++import com.example.demoapi.model.HtModel;
++import org.mapstruct.Mapper;
++
++import java.util.List;
++
++@Mapper(componentModel = "spring")
++public interface HtMapper {
++
++	HtDto modeltoDto(HtModel htModel);
++	HtModel dtoToModel(HtDto htDto);
++
++	List<HtDto> modelsToDtos(List<HtModel> htModelList);
++}
+Index: src/main/java/com/example/demoapi/model/HtModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/model/HtModel.java b/src/main/java/com/example/demoapi/model/HtModel.java
+new file mode 100644
+--- /dev/null	(date 1638435251481)
++++ b/src/main/java/com/example/demoapi/model/HtModel.java	(date 1638435251481)
+@@ -0,0 +1,21 @@
++package com.example.demoapi.model;
++
++import lombok.Data;
++
++import javax.persistence.*;
++
++@Entity
++@Data
++@Table(name = "ht")
++public class HtModel {
++	@Id
++	@GeneratedValue(strategy = GenerationType.IDENTITY)
++	@Column(name = "idht")
++	private int idht;
++
++	@Column(name = "htcol1")
++	private String htcol1;
++
++	@Column(name = "htcol2")
++	private String htcol2;
++}
+Index: src/main/java/com/example/demoapi/dto/HtDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/dto/HtDto.java b/src/main/java/com/example/demoapi/dto/HtDto.java
+new file mode 100644
+--- /dev/null	(date 1638435251478)
++++ b/src/main/java/com/example/demoapi/dto/HtDto.java	(date 1638435251478)
+@@ -0,0 +1,26 @@
++package com.example.demoapi.dto;
++
++import lombok.Data;
++import org.springframework.format.annotation.NumberFormat;
++
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++import javax.validation.constraints.NotEmpty;
++import javax.validation.constraints.Pattern;
++
++@Data
++public class HtDto {
++	@Id
++	@GeneratedValue(strategy = GenerationType.IDENTITY)
++
++	private int idht;
++
++
++	@NotEmpty(message = "1. Không được trống")
++	private String htcol1;
++
++
++	@NotEmpty(message = "2. Không được trống")
++	private String htcol2;
++}
+Index: src/main/java/com/example/demoapi/repository/HtRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/repository/HtRepository.java b/src/main/java/com/example/demoapi/repository/HtRepository.java
+new file mode 100644
+--- /dev/null	(date 1638435251482)
++++ b/src/main/java/com/example/demoapi/repository/HtRepository.java	(date 1638435251482)
+@@ -0,0 +1,9 @@
++package com.example.demoapi.repository;
++
++import com.example.demoapi.model.HtModel;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++@Repository
++public interface HtRepository extends JpaRepository<HtModel, Integer> {
++}
+Index: mvnw.cmd
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/mvnw.cmd b/mvnw.cmd
+new file mode 100644
+--- /dev/null	(date 1638435251465)
++++ b/mvnw.cmd	(date 1638435251465)
+@@ -0,0 +1,182 @@
++@REM ----------------------------------------------------------------------------
++@REM Licensed to the Apache Software Foundation (ASF) under one
++@REM or more contributor license agreements.  See the NOTICE file
++@REM distributed with this work for additional information
++@REM regarding copyright ownership.  The ASF licenses this file
++@REM to you under the Apache License, Version 2.0 (the
++@REM "License"); you may not use this file except in compliance
++@REM with the License.  You may obtain a copy of the License at
++@REM
++@REM    https://www.apache.org/licenses/LICENSE-2.0
++@REM
++@REM Unless required by applicable law or agreed to in writing,
++@REM software distributed under the License is distributed on an
++@REM "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++@REM KIND, either express or implied.  See the License for the
++@REM specific language governing permissions and limitations
++@REM under the License.
++@REM ----------------------------------------------------------------------------
++
++@REM ----------------------------------------------------------------------------
++@REM Maven Start Up Batch script
++@REM
++@REM Required ENV vars:
++@REM JAVA_HOME - location of a JDK home dir
++@REM
++@REM Optional ENV vars
++@REM M2_HOME - location of maven2's installed home dir
++@REM MAVEN_BATCH_ECHO - set to 'on' to enable the echoing of the batch commands
++@REM MAVEN_BATCH_PAUSE - set to 'on' to wait for a keystroke before ending
++@REM MAVEN_OPTS - parameters passed to the Java VM when running Maven
++@REM     e.g. to debug Maven itself, use
++@REM set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
++@REM MAVEN_SKIP_RC - flag to disable loading of mavenrc files
++@REM ----------------------------------------------------------------------------
++
++@REM Begin all REM lines with '@' in case MAVEN_BATCH_ECHO is 'on'
++@echo off
++@REM set title of command window
++title %0
++@REM enable echoing by setting MAVEN_BATCH_ECHO to 'on'
++@if "%MAVEN_BATCH_ECHO%" == "on"  echo %MAVEN_BATCH_ECHO%
++
++@REM set %HOME% to equivalent of $HOME
++if "%HOME%" == "" (set "HOME=%HOMEDRIVE%%HOMEPATH%")
++
++@REM Execute a user defined script before this one
++if not "%MAVEN_SKIP_RC%" == "" goto skipRcPre
++@REM check for pre script, once with legacy .bat ending and once with .cmd ending
++if exist "%HOME%\mavenrc_pre.bat" call "%HOME%\mavenrc_pre.bat"
++if exist "%HOME%\mavenrc_pre.cmd" call "%HOME%\mavenrc_pre.cmd"
++:skipRcPre
++
++@setlocal
++
++set ERROR_CODE=0
++
++@REM To isolate internal variables from possible post scripts, we use another setlocal
++@setlocal
++
++@REM ==== START VALIDATION ====
++if not "%JAVA_HOME%" == "" goto OkJHome
++
++echo.
++echo Error: JAVA_HOME not found in your environment. >&2
++echo Please set the JAVA_HOME variable in your environment to match the >&2
++echo location of your Java installation. >&2
++echo.
++goto error
++
++:OkJHome
++if exist "%JAVA_HOME%\bin\java.exe" goto init
++
++echo.
++echo Error: JAVA_HOME is set to an invalid directory. >&2
++echo JAVA_HOME = "%JAVA_HOME%" >&2
++echo Please set the JAVA_HOME variable in your environment to match the >&2
++echo location of your Java installation. >&2
++echo.
++goto error
++
++@REM ==== END VALIDATION ====
++
++:init
++
++@REM Find the project base dir, i.e. the directory that contains the folder ".mvn".
++@REM Fallback to current working directory if not found.
++
++set MAVEN_PROJECTBASEDIR=%MAVEN_BASEDIR%
++IF NOT "%MAVEN_PROJECTBASEDIR%"=="" goto endDetectBaseDir
++
++set EXEC_DIR=%CD%
++set WDIR=%EXEC_DIR%
++:findBaseDir
++IF EXIST "%WDIR%"\.mvn goto baseDirFound
++cd ..
++IF "%WDIR%"=="%CD%" goto baseDirNotFound
++set WDIR=%CD%
++goto findBaseDir
++
++:baseDirFound
++set MAVEN_PROJECTBASEDIR=%WDIR%
++cd "%EXEC_DIR%"
++goto endDetectBaseDir
++
++:baseDirNotFound
++set MAVEN_PROJECTBASEDIR=%EXEC_DIR%
++cd "%EXEC_DIR%"
++
++:endDetectBaseDir
++
++IF NOT EXIST "%MAVEN_PROJECTBASEDIR%\.mvn\jvm.config" goto endReadAdditionalConfig
++
++@setlocal EnableExtensions EnableDelayedExpansion
++for /F "usebackq delims=" %%a in ("%MAVEN_PROJECTBASEDIR%\.mvn\jvm.config") do set JVM_CONFIG_MAVEN_PROPS=!JVM_CONFIG_MAVEN_PROPS! %%a
++@endlocal & set JVM_CONFIG_MAVEN_PROPS=%JVM_CONFIG_MAVEN_PROPS%
++
++:endReadAdditionalConfig
++
++SET MAVEN_JAVA_EXE="%JAVA_HOME%\bin\java.exe"
++set WRAPPER_JAR="%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar"
++set WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
++
++set DOWNLOAD_URL="https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar"
++
++FOR /F "tokens=1,2 delims==" %%A IN ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.properties") DO (
++    IF "%%A"=="wrapperUrl" SET DOWNLOAD_URL=%%B
++)
++
++@REM Extension to allow automatically downloading the maven-wrapper.jar from Maven-central
++@REM This allows using the maven wrapper in projects that prohibit checking in binary data.
++if exist %WRAPPER_JAR% (
++    if "%MVNW_VERBOSE%" == "true" (
++        echo Found %WRAPPER_JAR%
++    )
++) else (
++    if not "%MVNW_REPOURL%" == "" (
++        SET DOWNLOAD_URL="%MVNW_REPOURL%/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar"
++    )
++    if "%MVNW_VERBOSE%" == "true" (
++        echo Couldn't find %WRAPPER_JAR%, downloading it ...
++        echo Downloading from: %DOWNLOAD_URL%
++    )
++
++    powershell -Command "&{"^
++		"$webclient = new-object System.Net.WebClient;"^
++		"if (-not ([string]::IsNullOrEmpty('%MVNW_USERNAME%') -and [string]::IsNullOrEmpty('%MVNW_PASSWORD%'))) {"^
++		"$webclient.Credentials = new-object System.Net.NetworkCredential('%MVNW_USERNAME%', '%MVNW_PASSWORD%');"^
++		"}"^
++		"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $webclient.DownloadFile('%DOWNLOAD_URL%', '%WRAPPER_JAR%')"^
++		"}"
++    if "%MVNW_VERBOSE%" == "true" (
++        echo Finished downloading %WRAPPER_JAR%
++    )
++)
++@REM End of extension
++
++@REM Provide a "standardized" way to retrieve the CLI args that will
++@REM work with both Windows and non-Windows executions.
++set MAVEN_CMD_LINE_ARGS=%*
++
++%MAVEN_JAVA_EXE% %JVM_CONFIG_MAVEN_PROPS% %MAVEN_OPTS% %MAVEN_DEBUG_OPTS% -classpath %WRAPPER_JAR% "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" %WRAPPER_LAUNCHER% %MAVEN_CONFIG% %*
++if ERRORLEVEL 1 goto error
++goto end
++
++:error
++set ERROR_CODE=1
++
++:end
++@endlocal & set ERROR_CODE=%ERROR_CODE%
++
++if not "%MAVEN_SKIP_RC%" == "" goto skipRcPost
++@REM check for post script, once with legacy .bat ending and once with .cmd ending
++if exist "%HOME%\mavenrc_post.bat" call "%HOME%\mavenrc_post.bat"
++if exist "%HOME%\mavenrc_post.cmd" call "%HOME%\mavenrc_post.cmd"
++:skipRcPost
++
++@REM pause the script if MAVEN_BATCH_PAUSE is set to 'on'
++if "%MAVEN_BATCH_PAUSE%" == "on" pause
++
++if "%MAVEN_TERMINATE_CMD%" == "on" exit %ERROR_CODE%
++
++exit /B %ERROR_CODE%
+Index: src/main/java/com/example/demoapi/controller/HtController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/controller/HtController.java b/src/main/java/com/example/demoapi/controller/HtController.java
+new file mode 100644
+--- /dev/null	(date 1638435251476)
++++ b/src/main/java/com/example/demoapi/controller/HtController.java	(date 1638435251476)
+@@ -0,0 +1,52 @@
++package com.example.demoapi.controller;
++
++import com.example.demoapi.ResourceException;
++import com.example.demoapi.dto.HtDto;
++import com.example.demoapi.mapper.HtMapper;
++import com.example.demoapi.model.HtModel;
++import com.example.demoapi.service.HtService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.http.HttpStatus;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++
++import javax.validation.Valid;
++import java.util.List;
++import java.util.Optional;
++
++@RestController
++@RequestMapping(value = "api/v1")
++public class HtController {
++	@Autowired
++	HtService htService;
++	@Autowired
++	HtMapper htMapper;
++
++	@GetMapping("/ht")
++	public ResponseEntity<List<HtDto>> findAll() {
++		return new ResponseEntity<>(htService.getAll(), HttpStatus.OK);
++	}
++
++	@PostMapping("/ht")
++	public ResponseEntity<HtModel> create(@Valid @RequestBody HtDto htDto) {
++		return new ResponseEntity<>(htService.save(htMapper.dtoToModel(htDto)), HttpStatus.CREATED);
++	}
++
++	@PutMapping("/ht/{id}")
++	public ResponseEntity<HtModel> update(@PathVariable Integer id, @RequestBody HtDto htDto) {
++		Optional<HtModel> htModel = htService.getById(id);
++		return htModel.map(ht1 -> {
++			htDto.setIdht(ht1.getIdht());
++			return new ResponseEntity<>(htService.save(htMapper.dtoToModel(htDto)), HttpStatus.OK);
++		}).orElseThrow(() -> new ResourceException(HttpStatus.NOT_FOUND, "HT Not Found!!!"));
++	}
++
++	@DeleteMapping("/ht/{id}")
++	public ResponseEntity<HtModel> delete(@PathVariable Integer id) {
++		Optional<HtModel> htModel = htService.getById(id);
++		return htModel.map(ht -> {
++			htService.delete(id);
++			return new ResponseEntity<>(ht, HttpStatus.OK);
++		}).orElseThrow(() -> new ResourceException(HttpStatus.NOT_FOUND, "Not Found."));
++	}
++}
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+--- /dev/null	(date 1638435251349)
++++ b/.gitignore	(date 1638435251349)
+@@ -0,0 +1,33 @@
++HELP.md
++target/
++!.mvn/wrapper/maven-wrapper.jar
++!**/src/main/**/target/
++!**/src/test/**/target/
++
++### STS ###
++.apt_generated
++.classpath
++.factorypath
++.project
++.settings
++.springBeans
++.sts4-cache
++
++### IntelliJ IDEA ###
++.idea
++*.iws
++*.iml
++*.ipr
++
++### NetBeans ###
++/nbproject/private/
++/nbbuild/
++/dist/
++/nbdist/
++/.nb-gradle/
++build/
++!**/src/main/**/build/
++!**/src/test/**/build/
++
++### VS Code ###
++.vscode/
+Index: src/main/java/com/example/demoapi/service/HtServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/service/HtServiceImpl.java b/src/main/java/com/example/demoapi/service/HtServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1638435251485)
++++ b/src/main/java/com/example/demoapi/service/HtServiceImpl.java	(date 1638435251485)
+@@ -0,0 +1,48 @@
++package com.example.demoapi.service;
++
++
++import com.example.demoapi.ResourceException;
++import com.example.demoapi.dto.HtDto;
++import com.example.demoapi.mapper.HtMapper;
++import com.example.demoapi.model.HtModel;
++import com.example.demoapi.repository.HtRepository;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.http.HttpStatus;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++import java.util.Optional;
++
++@Service
++public class HtServiceImpl implements HtService{
++	@Autowired
++	HtRepository htRepository;
++	@Autowired
++	HtMapper htMapper;
++	@Override
++	public List<HtDto> getAll() {
++		return htMapper.modelsToDtos(htRepository.findAll());
++	}
++
++	@Override
++	public HtModel save(HtModel htModel) {
++		List<HtModel> htModelList = htRepository.findAll();
++		for (HtModel ht:
++			 htModelList) {
++			if (htModel.getHtcol1().equalsIgnoreCase(ht.getHtcol1())){
++				throw new ResourceException(HttpStatus.BAD_REQUEST, "Trùng user " + ht.getHtcol1());
++			}
++		}
++		return htRepository.save(htModel);
++	}
++
++	@Override
++	public void delete(Integer id) {
++		htRepository.delete(htRepository.getById(id));
++	}
++
++	@Override
++	public Optional<HtModel> getById(Integer id) {
++		return htRepository.findById(id);
++	}
++}
+Index: src/main/java/com/example/demoapi/service/HtService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/demoapi/service/HtService.java b/src/main/java/com/example/demoapi/service/HtService.java
+new file mode 100644
+--- /dev/null	(date 1638435251484)
++++ b/src/main/java/com/example/demoapi/service/HtService.java	(date 1638435251484)
+@@ -0,0 +1,17 @@
++package com.example.demoapi.service;
++
++import com.example.demoapi.dto.HtDto;
++import com.example.demoapi.model.HtModel;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface HtService {
++	List<HtDto> getAll();
++
++	HtModel save(HtModel htModel);
++
++	void delete(Integer id);
++
++	Optional<HtModel> getById(Integer id);
++}
+Index: mvnw
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/mvnw b/mvnw
+new file mode 100644
+--- /dev/null	(date 1638435251462)
++++ b/mvnw	(date 1638435251462)
+@@ -0,0 +1,310 @@
++#!/bin/sh
++# ----------------------------------------------------------------------------
++# Licensed to the Apache Software Foundation (ASF) under one
++# or more contributor license agreements.  See the NOTICE file
++# distributed with this work for additional information
++# regarding copyright ownership.  The ASF licenses this file
++# to you under the Apache License, Version 2.0 (the
++# "License"); you may not use this file except in compliance
++# with the License.  You may obtain a copy of the License at
++#
++#    https://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing,
++# software distributed under the License is distributed on an
++# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++# KIND, either express or implied.  See the License for the
++# specific language governing permissions and limitations
++# under the License.
++# ----------------------------------------------------------------------------
++
++# ----------------------------------------------------------------------------
++# Maven Start Up Batch script
++#
++# Required ENV vars:
++# ------------------
++#   JAVA_HOME - location of a JDK home dir
++#
++# Optional ENV vars
++# -----------------
++#   M2_HOME - location of maven2's installed home dir
++#   MAVEN_OPTS - parameters passed to the Java VM when running Maven
++#     e.g. to debug Maven itself, use
++#       set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
++#   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
++# ----------------------------------------------------------------------------
++
++if [ -z "$MAVEN_SKIP_RC" ] ; then
++
++  if [ -f /etc/mavenrc ] ; then
++    . /etc/mavenrc
++  fi
++
++  if [ -f "$HOME/.mavenrc" ] ; then
++    . "$HOME/.mavenrc"
++  fi
++
++fi
++
++# OS specific support.  $var _must_ be set to either true or false.
++cygwin=false;
++darwin=false;
++mingw=false
++case "`uname`" in
++  CYGWIN*) cygwin=true ;;
++  MINGW*) mingw=true;;
++  Darwin*) darwin=true
++    # Use /usr/libexec/java_home if available, otherwise fall back to /Library/Java/Home
++    # See https://developer.apple.com/library/mac/qa/qa1170/_index.html
++    if [ -z "$JAVA_HOME" ]; then
++      if [ -x "/usr/libexec/java_home" ]; then
++        export JAVA_HOME="`/usr/libexec/java_home`"
++      else
++        export JAVA_HOME="/Library/Java/Home"
++      fi
++    fi
++    ;;
++esac
++
++if [ -z "$JAVA_HOME" ] ; then
++  if [ -r /etc/gentoo-release ] ; then
++    JAVA_HOME=`java-config --jre-home`
++  fi
++fi
++
++if [ -z "$M2_HOME" ] ; then
++  ## resolve links - $0 may be a link to maven's home
++  PRG="$0"
++
++  # need this for relative symlinks
++  while [ -h "$PRG" ] ; do
++    ls=`ls -ld "$PRG"`
++    link=`expr "$ls" : '.*-> \(.*\)$'`
++    if expr "$link" : '/.*' > /dev/null; then
++      PRG="$link"
++    else
++      PRG="`dirname "$PRG"`/$link"
++    fi
++  done
++
++  saveddir=`pwd`
++
++  M2_HOME=`dirname "$PRG"`/..
++
++  # make it fully qualified
++  M2_HOME=`cd "$M2_HOME" && pwd`
++
++  cd "$saveddir"
++  # echo Using m2 at $M2_HOME
++fi
++
++# For Cygwin, ensure paths are in UNIX format before anything is touched
++if $cygwin ; then
++  [ -n "$M2_HOME" ] &&
++    M2_HOME=`cygpath --unix "$M2_HOME"`
++  [ -n "$JAVA_HOME" ] &&
++    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
++  [ -n "$CLASSPATH" ] &&
++    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
++fi
++
++# For Mingw, ensure paths are in UNIX format before anything is touched
++if $mingw ; then
++  [ -n "$M2_HOME" ] &&
++    M2_HOME="`(cd "$M2_HOME"; pwd)`"
++  [ -n "$JAVA_HOME" ] &&
++    JAVA_HOME="`(cd "$JAVA_HOME"; pwd)`"
++fi
++
++if [ -z "$JAVA_HOME" ]; then
++  javaExecutable="`which javac`"
++  if [ -n "$javaExecutable" ] && ! [ "`expr \"$javaExecutable\" : '\([^ ]*\)'`" = "no" ]; then
++    # readlink(1) is not available as standard on Solaris 10.
++    readLink=`which readlink`
++    if [ ! `expr "$readLink" : '\([^ ]*\)'` = "no" ]; then
++      if $darwin ; then
++        javaHome="`dirname \"$javaExecutable\"`"
++        javaExecutable="`cd \"$javaHome\" && pwd -P`/javac"
++      else
++        javaExecutable="`readlink -f \"$javaExecutable\"`"
++      fi
++      javaHome="`dirname \"$javaExecutable\"`"
++      javaHome=`expr "$javaHome" : '\(.*\)/bin'`
++      JAVA_HOME="$javaHome"
++      export JAVA_HOME
++    fi
++  fi
++fi
++
++if [ -z "$JAVACMD" ] ; then
++  if [ -n "$JAVA_HOME"  ] ; then
++    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
++      # IBM's JDK on AIX uses strange locations for the executables
++      JAVACMD="$JAVA_HOME/jre/sh/java"
++    else
++      JAVACMD="$JAVA_HOME/bin/java"
++    fi
++  else
++    JAVACMD="`which java`"
++  fi
++fi
++
++if [ ! -x "$JAVACMD" ] ; then
++  echo "Error: JAVA_HOME is not defined correctly." >&2
++  echo "  We cannot execute $JAVACMD" >&2
++  exit 1
++fi
++
++if [ -z "$JAVA_HOME" ] ; then
++  echo "Warning: JAVA_HOME environment variable is not set."
++fi
++
++CLASSWORLDS_LAUNCHER=org.codehaus.plexus.classworlds.launcher.Launcher
++
++# traverses directory structure from process work directory to filesystem root
++# first directory with .mvn subdirectory is considered project base directory
++find_maven_basedir() {
++
++  if [ -z "$1" ]
++  then
++    echo "Path not specified to find_maven_basedir"
++    return 1
++  fi
++
++  basedir="$1"
++  wdir="$1"
++  while [ "$wdir" != '/' ] ; do
++    if [ -d "$wdir"/.mvn ] ; then
++      basedir=$wdir
++      break
++    fi
++    # workaround for JBEAP-8937 (on Solaris 10/Sparc)
++    if [ -d "${wdir}" ]; then
++      wdir=`cd "$wdir/.."; pwd`
++    fi
++    # end of workaround
++  done
++  echo "${basedir}"
++}
++
++# concatenates all lines of a file
++concat_lines() {
++  if [ -f "$1" ]; then
++    echo "$(tr -s '\n' ' ' < "$1")"
++  fi
++}
++
++BASE_DIR=`find_maven_basedir "$(pwd)"`
++if [ -z "$BASE_DIR" ]; then
++  exit 1;
++fi
++
++##########################################################################################
++# Extension to allow automatically downloading the maven-wrapper.jar from Maven-central
++# This allows using the maven wrapper in projects that prohibit checking in binary data.
++##########################################################################################
++if [ -r "$BASE_DIR/.mvn/wrapper/maven-wrapper.jar" ]; then
++    if [ "$MVNW_VERBOSE" = true ]; then
++      echo "Found .mvn/wrapper/maven-wrapper.jar"
++    fi
++else
++    if [ "$MVNW_VERBOSE" = true ]; then
++      echo "Couldn't find .mvn/wrapper/maven-wrapper.jar, downloading it ..."
++    fi
++    if [ -n "$MVNW_REPOURL" ]; then
++      jarUrl="$MVNW_REPOURL/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar"
++    else
++      jarUrl="https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar"
++    fi
++    while IFS="=" read key value; do
++      case "$key" in (wrapperUrl) jarUrl="$value"; break ;;
++      esac
++    done < "$BASE_DIR/.mvn/wrapper/maven-wrapper.properties"
++    if [ "$MVNW_VERBOSE" = true ]; then
++      echo "Downloading from: $jarUrl"
++    fi
++    wrapperJarPath="$BASE_DIR/.mvn/wrapper/maven-wrapper.jar"
++    if $cygwin; then
++      wrapperJarPath=`cygpath --path --windows "$wrapperJarPath"`
++    fi
++
++    if command -v wget > /dev/null; then
++        if [ "$MVNW_VERBOSE" = true ]; then
++          echo "Found wget ... using wget"
++        fi
++        if [ -z "$MVNW_USERNAME" ] || [ -z "$MVNW_PASSWORD" ]; then
++            wget "$jarUrl" -O "$wrapperJarPath"
++        else
++            wget --http-user=$MVNW_USERNAME --http-password=$MVNW_PASSWORD "$jarUrl" -O "$wrapperJarPath"
++        fi
++    elif command -v curl > /dev/null; then
++        if [ "$MVNW_VERBOSE" = true ]; then
++          echo "Found curl ... using curl"
++        fi
++        if [ -z "$MVNW_USERNAME" ] || [ -z "$MVNW_PASSWORD" ]; then
++            curl -o "$wrapperJarPath" "$jarUrl" -f
++        else
++            curl --user $MVNW_USERNAME:$MVNW_PASSWORD -o "$wrapperJarPath" "$jarUrl" -f
++        fi
++
++    else
++        if [ "$MVNW_VERBOSE" = true ]; then
++          echo "Falling back to using Java to download"
++        fi
++        javaClass="$BASE_DIR/.mvn/wrapper/MavenWrapperDownloader.java"
++        # For Cygwin, switch paths to Windows format before running javac
++        if $cygwin; then
++          javaClass=`cygpath --path --windows "$javaClass"`
++        fi
++        if [ -e "$javaClass" ]; then
++            if [ ! -e "$BASE_DIR/.mvn/wrapper/MavenWrapperDownloader.class" ]; then
++                if [ "$MVNW_VERBOSE" = true ]; then
++                  echo " - Compiling MavenWrapperDownloader.java ..."
++                fi
++                # Compiling the Java class
++                ("$JAVA_HOME/bin/javac" "$javaClass")
++            fi
++            if [ -e "$BASE_DIR/.mvn/wrapper/MavenWrapperDownloader.class" ]; then
++                # Running the downloader
++                if [ "$MVNW_VERBOSE" = true ]; then
++                  echo " - Running MavenWrapperDownloader.java ..."
++                fi
++                ("$JAVA_HOME/bin/java" -cp .mvn/wrapper MavenWrapperDownloader "$MAVEN_PROJECTBASEDIR")
++            fi
++        fi
++    fi
++fi
++##########################################################################################
++# End of extension
++##########################################################################################
++
++export MAVEN_PROJECTBASEDIR=${MAVEN_BASEDIR:-"$BASE_DIR"}
++if [ "$MVNW_VERBOSE" = true ]; then
++  echo $MAVEN_PROJECTBASEDIR
++fi
++MAVEN_OPTS="$(concat_lines "$MAVEN_PROJECTBASEDIR/.mvn/jvm.config") $MAVEN_OPTS"
++
++# For Cygwin, switch paths to Windows format before running java
++if $cygwin; then
++  [ -n "$M2_HOME" ] &&
++    M2_HOME=`cygpath --path --windows "$M2_HOME"`
++  [ -n "$JAVA_HOME" ] &&
++    JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
++  [ -n "$CLASSPATH" ] &&
++    CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
++  [ -n "$MAVEN_PROJECTBASEDIR" ] &&
++    MAVEN_PROJECTBASEDIR=`cygpath --path --windows "$MAVEN_PROJECTBASEDIR"`
++fi
++
++# Provide a "standardized" way to retrieve the CLI args that will
++# work with both Windows and non-Windows executions.
++MAVEN_CMD_LINE_ARGS="$MAVEN_CONFIG $@"
++export MAVEN_CMD_LINE_ARGS
++
++WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
++
++exec "$JAVACMD" \
++  $MAVEN_OPTS \
++  -classpath "$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.jar" \
++  "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
++  ${WRAPPER_LAUNCHER} $MAVEN_CONFIG "$@"
