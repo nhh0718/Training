@@ -1,0 +1,1 @@
+package com.example.demoapi.mapper;import com.example.demoapi.dto.HtDto;import com.example.demoapi.model.HtModel;import org.mapstruct.Mapper;import java.util.List;@Mapper(componentModel = "spring")public interface HtMapper {	HtDto modeltoDto(HtModel htModel);	HtModel dtoToModel(HtDto htDto);	List<HtDto> modelsToDtos(List<HtModel> htModelList);}

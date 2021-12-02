@@ -1,0 +1,1 @@
+package com.example.demoapi.model;import lombok.Data;import javax.persistence.*;@Entity@Data@Table(name = "ht")public class HtModel {	@Id	@GeneratedValue(strategy = GenerationType.IDENTITY)	@Column(name = "idht")	private int idht;	@Column(name = "htcol1")	private String htcol1;	@Column(name = "htcol2")	private String htcol2;}
